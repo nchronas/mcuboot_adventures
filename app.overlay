@@ -1,3 +1,5 @@
+#include "sysbuild/flash.overlay"
+
 / {
 	chosen {
 		zephyr,shell-uart = &usart3;
