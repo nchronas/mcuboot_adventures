@@ -1,0 +1,11 @@
+/ {
+	chosen {
+		zephyr,shell-uart = &usart3;
+	};
+};
+
+/ {
+        chosen {
+                zephyr,code-partition = &slot0_partition;
+        };
+};
