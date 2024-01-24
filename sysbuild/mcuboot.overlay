@@ -1,1 +1,2 @@
 #include "flash.overlay"
+#include "lfs_sd.overlay"
