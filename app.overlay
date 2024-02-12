@@ -1,5 +1,5 @@
-#include "sysbuild/flash.overlay"
-#include "sysbuild/lfs_sd.overlay"
+// #include "sysbuild/flash.overlay"
+// #include "sysbuild/lfs_sd.overlay"
 
 / {
 	chosen {

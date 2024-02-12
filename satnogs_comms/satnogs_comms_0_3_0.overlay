@@ -1,0 +1,38 @@
+/*
+ *  SatNOGS-COMMS MCU software
+ *
+ *  Copyright (C) 2022, Libre Space Foundation <http://libre.space>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  SPDX-License-Identifier: GNU General Public License v3.0 or later
+ */
+
+
+ /* Current, voltage and temperature sensors, external pull-up */
+&i2c4 {
+    pinctrl-0 = <&i2c4_scl_pb8 &i2c4_sda_pb7>;
+    pinctrl-names = "default";
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+    /* For bus recovery */
+    scl-gpios = <&gpiob 8 GPIO_ACTIVE_HIGH >;
+    sda-gpios = <&gpiob 7 GPIO_ACTIVE_HIGH >;
+};
+
+/ {
+    aliases {
+        sensorsi2c = &i2c4;
+    };
+};

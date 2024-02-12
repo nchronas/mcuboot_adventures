@@ -1,8 +1,0 @@
-&sdmmc1 {
-    compatible = "st,stm32-sdmmc";
-    pinctrl-0 = <&sdmmc1_d0_pc8
-    			&sdmmc1_ck_pc12 
-                &sdmmc1_cmd_pd2>;
-    pinctrl-names = "default";
-    status = "okay";
-};

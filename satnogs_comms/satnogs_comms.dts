@@ -1,0 +1,453 @@
+/*
+ *  SatNOGS-COMMS MCU software
+ *
+ *  Copyright (C) 2022, Libre Space Foundation <http: //libre.space>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  *  GNU General Public License for more details.
+  *
+  *  You should have received a copy of the GNU General Public License
+  *  along with this program.  If not, see <http: //www.gnu.org/licenses/>.
+  *
+  *  SPDX-License-Identifier: GNU General Public License v3.0 or later
+  */
+
+ /dts-v1/;
+#include <st/h7/stm32h723Xe.dtsi>
+#include <st/h7/stm32h723vetx-pinctrl.dtsi>
+
+
+/ {
+    model = "SatNOGS-COMMS board";
+    compatible = "lsf,satnogs";
+
+    chosen {
+        zephyr,console = &usart3;
+        zephyr,shell-uart = &usart3;
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zephyr,dtcm = &dtcm;
+        zephyr,code-partition = &slot0_partition;
+        zephyr,canbus = &can1;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        pe14_led: led_0 {
+            gpios = <&gpioe 14 GPIO_ACTIVE_HIGH>;
+            label = "LED0";
+        };
+        pe15_led: led_1 {
+            gpios = <&gpioe 15 GPIO_ACTIVE_HIGH>;
+            label = "LED1";
+        };
+
+        /* Enables the RF mixer digital interface. Set to active high as the driver uses the raw output as input */
+        mixer_enx: mixer_enx {
+            gpios = <&gpioe 0 GPIO_ACTIVE_HIGH>;
+            label = "MIXER ENX";
+        };
+
+        /* Clock for the RF mixer digital interface */
+        mixer_scl: mixer_scl {
+            gpios = <&gpioa 8 GPIO_ACTIVE_HIGH>;
+            label = "MIXER SCL";
+        };
+
+        mixer_sda: mixer_sda {
+            gpios = <&gpioc 9 GPIO_ACTIVE_HIGH>;
+            label = "MIXER SDA";
+        };
+
+        /* RF mixer reset. Set to active high as the driver uses the raw output as input */
+        mixer_rst: mixer_rst {
+            gpios = <&gpioe 3 GPIO_ACTIVE_HIGH>;
+            label = "MIXER RST";
+        };
+
+        /* Enables the load switch of the RF mixer */
+        mixer_en: mixer_en {
+            gpios = <&gpioc 0 GPIO_ACTIVE_LOW>;
+            label = "EN MIXER";
+        };
+
+        p5v_rf_en: p5v_rf_en {
+            gpios = <&gpioe 13 GPIO_ACTIVE_HIGH>;
+            label = "P5V RF EN";
+        };
+
+        p5v_fpga_en: p5v_fpga_en {
+            gpios = <&gpiod 8 GPIO_ACTIVE_HIGH>;
+            label = "P5V FPGA EN";
+        };
+
+        can1_en: can1_en {
+            gpios = <&gpiod 3 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
+            label = "CAN1 EN";
+        };
+
+        can1_low_pwr: can1_low_pwr {
+            gpios = <&gpiod 4 GPIO_ACTIVE_HIGH>;
+            label = "CAN1 LOW POWER";
+        };
+
+        can2_en: can2_en {
+            gpios = <&gpiod 5 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
+            label = "CAN2 EN";
+        };
+
+        can2_low_pwr: can2_low_pwr {
+            gpios = <&gpiod 7 GPIO_ACTIVE_HIGH>;
+            label = "CAN2 LOW POWER";
+        };
+
+        /* The AT86RF215 driver uses a "raw" logic rather than logical */
+        radio_rst: radio_rst {
+            gpios = <&gpioe 7 GPIO_ACTIVE_HIGH>;
+            label = "RADIO RST";
+        };
+
+        en_agc_uhf: en_agc_uhf {
+            gpios = <&gpiob 1 GPIO_ACTIVE_HIGH>;
+            label = "AGC EN UHF";
+        };
+
+        flt_sel_uhf: flt_sel_uhf {
+            gpios = <&gpiob 0 GPIO_ACTIVE_HIGH>;
+            label = "FILTER SEL UHF";
+        };
+
+        en_pa_uhf: en_pa_uhf {
+            gpios = <&gpiob 2 GPIO_ACTIVE_LOW>;
+            label = "PA EN UHF";
+        };
+
+        en_rx_uhf: en_rx_uhf {
+            gpios = <&gpioe 11 GPIO_ACTIVE_LOW>;
+            label = "RX EN UHF";
+        };
+
+        en_amp_uhf: en_amp_uhf {
+            gpios = <&gpioa 1 GPIO_ACTIVE_HIGH>;
+            label = "LNA EN UHF";
+        };
+    };
+
+    gpio_keys {
+        compatible = "gpio-keys";
+        p5v_rf_pg: p5v_rf_pg {
+            label = "P5V RF PGOOD";
+            gpios = <&gpioc 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+
+        p5v_fpga_pg: p5v_fpga_pg {
+            label = "P5V FPGA PGOOD";
+            gpios = <&gpiod 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+
+        p3v3_rf_pg: p3v3_rf_pg {
+            label = "P3V3 RF PGOOD";
+            gpios = <&gpioa 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+
+        radio_trx_irq: radio_trx_irq {
+            label = "TRX Interrupt";
+            gpios = <&gpioc 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        };
+
+        alert_pcb_temp: alert_pcb_temp {
+            label = "PCB TEMP ALERT";
+            gpios = <&gpioe 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+
+        alert_uhf_pa_temp: alert_uhf_pa_temp {
+            label = "UHF PA TEMP ALERT";
+            gpios = <&gpioe 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+
+        alert_sband_pa_temp: alert_sband_pa_temp {
+            label = "SBAND PA TEMP ALERT";
+            gpios = <&gpiod 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+
+        flagb_mixer: flagb_mixer {
+            label = "FLAGB MIXER";
+            gpios = <&gpioe 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+
+        flagb_sband_pa: flagb_sband_pa {
+            label = "FLAGB SBAND PA";
+            gpios = <&gpiod 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+
+        emmc_en: emmc_en {
+            label = "EMMC EN";
+            gpios = <&gpioc 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        };
+
+        emmc_sel: emmc_sel {
+            label = "EMMC SEL";
+            gpios = <&gpioe 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        };
+    };
+
+    aliases {
+        led0 = &pe14_led;
+        led1 = &pe15_led;
+    };
+};
+
+
+/* HSI operates on 64 MHz */
+&clk_hsi {
+    hsi-div = <1>;
+    status = "okay";
+};
+
+&clk_hse {
+    hse-bypass;
+    clock-frequency = <DT_FREQ_M(32)>;
+    status = "okay";
+};
+
+/* 136 MHz */
+&pll {
+    div-m = <2>;
+    mul-n = <18>;
+    div-p = <1>;
+    div-q = <4>;
+    div-r = <2>;
+    clocks = <&clk_hse>;
+    status = "okay";
+};
+
+/* 288 MHz */
+&rcc {
+    clocks = <&pll>;
+    d1cpre = <1>;
+    clock-frequency = <DT_FREQ_M(288)>;
+    hpre = <2>;
+    d1ppre = <2>;
+    d2ppre1 = <2>;
+    d2ppre2 = <2>;
+    d3ppre = <2>;
+};
+
+&usart3 {
+    pinctrl-0 = <&usart3_tx_pb10 &usart3_rx_pb11>;
+    pinctrl-names = "default";
+    current-speed = <115200>;
+    status = "okay";
+};
+
+&rtc {
+    status = "okay";
+};
+
+/* Generic I2C through the PC104 */
+// &i2c2 {
+//     timings = <72000000 I2C_BITRATE_STANDARD 0x10808DD3>;
+//     pinctrl-0 = <&i2c2_scl_pb10 &i2c2_sda_pb11>;
+//     pinctrl-names = "default";
+//     status = "okay";
+//     clock-frequency = <I2C_BITRATE_STANDARD>;
+// };
+
+&timers12 {
+    st,prescaler = <10000>;
+    status = "okay";
+
+    pwm12: pwm {
+        status = "okay";
+        pinctrl-0 = <&tim12_ch1_pb14>;
+        pinctrl-names = "default";
+    };
+};
+
+&adc1 {
+    pinctrl-0 = <&adc1_inp4_pc4 &adc1_inp8_pc5 &adc1_inp3_pa6 &adc1_inp7_pa7>;
+    pinctrl-names = "default";
+    status = "okay";
+};
+
+&dac1 {
+    status = "okay";
+    pinctrl-0 = <&dac1_out1_pa4 &dac1_out2_pa5>;
+    pinctrl-names = "default";
+};
+
+/* Necessary for the RNG */
+&clk_hsi48 {
+    status = "okay";
+};
+
+&rng {
+    status = "okay";
+};
+
+&can1 {
+    pinctrl-0 = <&fdcan1_rx_pd0 &fdcan1_tx_pd1>;
+    pinctrl-names = "default";
+    bus-speed = <1000000>;
+    bus-speed-data = <1000000>;
+    status = "okay";
+};
+
+/* FPGA SPI bus */
+&spi2 {
+    status = "okay";
+    pinctrl-0 = <&spi2_sck_pb13 &spi2_miso_pb14 &spi2_mosi_pb15>;
+    pinctrl-names = "default";
+    cs-gpios = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+    fpga_spi: spi-dev-fpga@0 {
+        reg = <0>;
+    };
+};
+
+/* Generic SPI through the PC104 */
+&spi3 {
+    status = "okay";
+    pinctrl-0 = <&spi3_sck_pc10 &spi3_miso_pc11 &spi3_mosi_pd6>;
+    pinctrl-names = "default";
+
+    bus_spi: spi-dev-bus@0 {
+        reg = <0>;
+    };
+};
+
+/* Radio SPI */
+&spi4 {
+    status = "okay";
+    pinctrl-0 = <&spi4_sck_pe2 &spi4_miso_pe5 &spi4_mosi_pe6>;
+    pinctrl-names = "default";
+    cs-gpios = <&gpioe 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+    radio_spi: spi-dev-radio@0 {
+        reg = <0>;
+    };
+};
+
+&backup_sram {
+    status = "okay";
+};
+
+&sdmmc1 {
+    bus-width = <1>;
+    status = "okay";
+    pinctrl-0 = <&sdmmc1_d0_pc8 &sdmmc1_ck_pc12 &sdmmc1_cmd_pd2>;
+    pinctrl-names = "default";
+};
+
+
+&flash0 {
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        /* 64KB for bootloader */
+        boot_partition: partition@0 {
+            label = "mcuboot";
+            reg = <0x00000000 DT_SIZE_K(128)>;
+            read-only;
+        };
+
+        /* application image slot: 192KB */
+        slot0_partition: partition@20000{
+            label = "image-0";
+            reg = <0x00020000 DT_SIZE_K(128)>;
+        };
+
+        /* backup slot: 192KB */
+        slot1_partition: partition@40000 {
+            label = "image-1";
+            reg = <0x00040000  DT_SIZE_K(128)>;
+        };
+
+        /* swap slot: 128KB */
+        scratch_partition: partition@60000 {
+            label = "image-scratch";
+            reg = <0x00060000 DT_SIZE_K(128)>;
+        };
+
+    };
+};
+
+&iwdg1 {
+    status = "okay";
+};
+
+
+        // /* 64KB for bootloader */
+        // boot_partition: partition@0 {
+        //     label = "mcuboot";
+        //     reg = <0x00000000 DT_SIZE_K(128)>;
+        //     read-only;
+        // };
+
+        // /* application image slot: 192KB */
+        // slot0_partition: partition@20000{
+        //     label = "image-0";
+        //     reg = <0x00020000 DT_SIZE_K(256)>;
+        // };
+
+        // /* backup slot: 192KB */
+        // slot1_partition: partition@60000 {
+        //     label = "image-1";
+        //     reg = <0x00060000  DT_SIZE_K(256)>;
+        // };
+
+        // /* storage: 32KB for settings */
+        // storage_partition: partition@10000 {
+        //     label = "storage";
+        //     reg = <0x00010000 DT_SIZE_K(32)>;
+        // };
+
+
+// &flash0 {
+//     partitions {
+//         compatible = "fixed-partitions";
+//         #address-cells = <1>;
+//         #size-cells = <1>;
+
+//         /* 64KB for bootloader */
+//         boot_partition: partition@0 {
+//             label = "mcuboot";
+//             reg = <0x00000000 DT_SIZE_K(64)>;
+//             read-only;
+//         };
+
+//         /* application image slot: 192KB */
+//         slot0_partition: partition@10000 {
+//             label = "image-0";
+//             reg = <0x00010000 DT_SIZE_K(192)>;
+//         };
+
+//         /* backup slot: 192KB */
+//         slot1_partition: partition@40000 {
+//             label = "image-1";
+//             reg = <0x00040000 DT_SIZE_K(192)>;
+//         };
+
+//         /* swap slot: 128KB */
+//         scratch_partition: partition@70000 {
+//             label = "image-scratch";
+//             reg = <0x00070000 DT_SIZE_K(32)>;
+//         };
+
+//         /* storage: 32KB for settings */
+//         storage_partition: partition@78000 {
+//             label = "storage";
+//             reg = <0x00078000 DT_SIZE_K(32)>;
+//         };
+
+//     };
+// };
