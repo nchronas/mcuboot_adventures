@@ -12,8 +12,6 @@
 #include <zephyr/drivers/uart.h>
 #include "app_version.h"
 
-
-
 #include <zephyr/linker/linker-defs.h>
 
 
@@ -22,6 +20,8 @@ int main(void)
 
     printk("Address of sample %p\n", (void *)__rom_region_start);
     printk("Hello sysbuild with mcuboot! %s\n", CONFIG_BOARD);
+
+    k_busy_wait(10000000);
 
     const struct device *dev;
     uint32_t dtr = 0;
