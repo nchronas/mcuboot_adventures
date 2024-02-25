@@ -9,14 +9,7 @@
 #include <zephyr/drivers/uart.h>
 #include "app_version.h"
 
-#include <zephyr/dfu/flash_img.h>
-#include <zephyr/dfu/mcuboot.h>
-#include <zephyr/storage/flash_map.h>
-
-#include <zephyr/linker/linker-defs.h>
-
 #include <zephyr/fs/fs.h>
-// #include <zephyr/logging/log.h>
 
 #include <zephyr/storage/disk_access.h>
 

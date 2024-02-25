@@ -7,8 +7,16 @@
 	};
 };
 
+// With MCUBOOT
 / {
         chosen {
                 zephyr,code-partition = &slot0_partition;
         };
+};
+
+// Without MCUBOOT
+// / {
+//         chosen {
+//                 zephyr,code-partition = &boot_partition;
+//         };
 };
