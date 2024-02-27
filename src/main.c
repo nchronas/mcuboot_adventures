@@ -14,6 +14,9 @@
 
 #include <zephyr/linker/linker-defs.h>
 
+#include <zephyr/drivers/gpio.h>
+
+const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);
 
 int main(void)
 {
@@ -26,14 +29,16 @@ int main(void)
     const struct device *dev;
     uint32_t dtr = 0;
 
+    gpio_pin_configure_dt(&led0, GPIO_OUTPUT_ACTIVE);
+
     dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_shell_uart));
     if (!device_is_ready(dev)) {
         return 0;
     }
 
     while (!dtr) {
-        uart_line_ctrl_get(dev, UART_LINE_CTRL_DTR, &dtr);
-        k_sleep(K_MSEC(100));
+        gpio_pin_toggle_dt(&led0);
+        k_sleep(K_MSEC(1000));
     }
 
     return 0;

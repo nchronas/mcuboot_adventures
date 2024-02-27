@@ -15,3 +15,4 @@ target_sources(app PRIVATE src/main.c)
 # With MCUBOOT
 target_sources(app PRIVATE src/mcuboot_shell.c)
 target_sources(app PRIVATE src/lfs_shell.c)
+target_sources(app PRIVATE src/gpio_shell.c)
