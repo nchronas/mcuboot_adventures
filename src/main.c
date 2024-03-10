@@ -25,6 +25,7 @@ int main(void)
     printk("Hello sysbuild with mcuboot! %s\n", CONFIG_BOARD);
 
     k_busy_wait(10000000);
+    k_busy_wait(10000);
 
     const struct device *dev;
     uint32_t dtr = 0;

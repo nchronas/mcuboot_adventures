@@ -1,8 +1,38 @@
+// &sdmmc1 {
+//     compatible = "st,stm32-sdmmc";
+//     pinctrl-0 = <&sdmmc1_d0_pc8
+//     			&sdmmc1_ck_pc12 
+//                 &sdmmc1_cmd_pd2>;
+//     pinctrl-names = "default";
+//     bus-width = <1>;
+//     status = "okay";
+// };
+
 &sdmmc1 {
     compatible = "st,stm32-sdmmc";
     pinctrl-0 = <&sdmmc1_d0_pc8
     			&sdmmc1_ck_pc12 
                 &sdmmc1_cmd_pd2>;
+    // gpios = <&gpioc 12 GPIO_PULL_UP>;
     pinctrl-names = "default";
+    bus-width = <1>;
     status = "okay";
+};
+
+/ {
+    leds {
+        compatible = "gpio-leds";
+        green_le: led_5 {
+            gpios = <&gpioc 8 GPIO_PULL_UP>;
+            label = "User LD1";
+        };
+        green_l: led_6 {
+            gpios = <&gpioc 12 GPIO_PULL_UP>;
+            label = "User LD1";
+        };
+        green_: led_4 {
+            gpios = <&gpiod 2 GPIO_PULL_UP>;
+            label = "User LD1";
+        };
+    };
 };

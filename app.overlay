@@ -8,11 +8,11 @@
 };
 
 // With MCUBOOT
-/ {
-        chosen {
-                zephyr,code-partition = &slot0_partition;
-        };
-};
+// / {
+//         chosen {
+//                 zephyr,code-partition = &slot0_partition;
+//         };
+// };
 
 // Without MCUBOOT
 // / {
